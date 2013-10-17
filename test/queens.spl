@@ -1,0 +1,108 @@
+let 
+	check = fun q -> fun p ->
+		let i = 1 in
+			let b = q in
+				let tag = true in
+					while (not (b = nil)) and tag do
+						let h = head b in
+							tag := not ((h = p) or (h - p = i) or (p - h = i));
+							b := tail b;
+							i := i + 1
+						end
+					end;
+					tag
+				end
+			end
+		end
+in
+	let solve = fun n ->
+		let 
+			queens = nil 
+		in
+			let 
+				queen = nil 
+			in
+				if n < 0 or n = 0 then
+					queens
+				else
+					let 
+						i = 1 
+					in
+						while i < n + 1 and i > 0 do
+							let 
+								j = 1 
+							in
+								while j < n + 1 and i > 0 do
+									if ((check queen) j) then
+										queen := j :: queen;
+										if i = n then
+											queens := queen::queens;
+											
+											j := j + 1;
+											queen := tail queen;
+											if j > n and i>1 then
+												j := head queen + 1;
+												queen := tail queen;
+												i := i - 1
+											else
+												()
+											end
+										else
+											j := n + 1
+										end
+									else
+										if j = n then
+											let
+												tag = true
+											in
+												while (j > n or (j = n and tag)) and i > 0 do
+													if i = 1 then
+														i := 0
+													else
+														j := head queen + 1;
+														queen := tail queen;
+														i := i - 1;
+														tag := false
+													end
+												end
+											end
+										else
+											j := j + 1
+										end
+									end
+								end;
+								if i = 0 then
+									()
+								else
+									i := i + 1
+								end
+							end
+						end;
+						queens
+					end
+				end
+			end
+		end
+	in
+		let 
+			total = 0 
+		in
+			let 
+				queens = (solve 8)
+			in
+				let 
+					queen = nil
+				in
+					while not (queens = nil) do
+						queen := head queens;
+						(wggprint queen);
+						queens := tail queens;
+						total := total + 1
+					end;
+					total
+				end
+			end
+		end
+	end
+end
+$

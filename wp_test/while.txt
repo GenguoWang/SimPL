@@ -1,0 +1,5 @@
+let x = true in
+   while x do
+	 x:=false
+   end
+end

@@ -1,0 +1,48 @@
+let assignret = nil in
+let assigntmp = nil in 
+let assignpos = 0 in
+let 
+		indexof = fun list -> fun index ->
+                               if index > 0 then
+                                ((indexof (tail list)) index-1)							
+                               else
+                                head list
+                               end								
+	in 
+
+let 
+/* do list[i] = v */
+/* here we assumption: (head list) can be left value */
+  assign = fun list -> fun v -> fun i -> fun size ->
+      (assignret := nil;
+	  assigntmp := nil;
+	  assignpos := 0;
+      while (assignpos < size)
+      do
+	    if (not(assignpos = i))
+		then
+			assigntmp := ((indexof list) assignpos):: assigntmp
+		else
+		    assigntmp := v :: assigntmp
+		end
+		;
+		assignpos := assignpos+1
+	  end
+	  ;
+	  assignpos := 0;
+      while (assignpos < size)
+      do
+		assignret := ((indexof assigntmp) assignpos):: assignret
+		;
+		assignpos := assignpos+1
+	  end
+	  ;
+	  assignret
+	  )
+  in
+	((((assign (1::2::3::nil)) 10) 1) 3)	
+end
+end
+end
+end
+end

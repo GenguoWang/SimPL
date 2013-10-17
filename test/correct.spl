@@ -1,0 +1,7 @@
+/*output:11*/
+let 
+	f1=fun x->let f2=fun y->x+y in f2 end
+in 
+	((f1 10) 1)
+end
+$

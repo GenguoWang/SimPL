@@ -1,0 +1,16 @@
+let
+  list = 1::2::3::4::nil in
+  let
+	sum = 0 in let n = 3 in
+	let 
+		f = fun x -> fun y -> if y > 0 then
+		                         (sum := sum + (head x));
+                                ((f (tail x)) y-1)							
+                               else
+                                head x
+                               end								
+	in 
+       ((f list) n)
+    end
+  end
+end

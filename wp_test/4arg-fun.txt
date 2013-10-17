@@ -1,0 +1,9 @@
+let 
+  x = fun y ->
+      fun z -> 
+      fun m ->
+      fun n ->
+      y+z+m+100+n 
+  in 
+     ((((x 1) 2) 4)8)
+end

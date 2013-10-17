@@ -1,0 +1,13 @@
+let
+  f1 = fun x -> x + num in
+  let
+	num = 10 in 
+	let 
+		f2 = fun y ->
+		y+num
+	in 
+	 num := 100;
+     (f2 1)
+    end
+  end
+end

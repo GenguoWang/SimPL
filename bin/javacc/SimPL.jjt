@@ -1,0 +1,326 @@
+options {
+  JAVA_UNICODE_ESCAPE = true;
+  STATIC=false;
+  VISITOR=true;
+  NODE_USES_PARSER=true;
+  NODE_FACTORY = true;
+  NODE_PREFIX = "SimPL";
+}
+
+PARSER_BEGIN(WggSimPLParser)
+package javacc;
+
+
+public class WggSimPLParser {
+ public SimpleNode getTreeRoot()
+ {  	return  (SimpleNode)(this.jjtree.rootNode());
+ }
+ 
+}
+
+PARSER_END(WggSimPLParser)
+
+/* WHITE SPACE */
+
+SPECIAL_TOKEN :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+| "\f"
+}
+
+/* COMMENTS */
+
+MORE :
+{
+  "/*" : IN_MULTI_LINE_COMMENT
+}
+
+<IN_MULTI_LINE_COMMENT>
+SPECIAL_TOKEN :
+{
+  <MULTI_LINE_COMMENT: "*/" > : DEFAULT
+}
+
+<IN_MULTI_LINE_COMMENT>
+MORE :
+{
+  < ~[] >
+}
+/* key word */
+TOKEN :
+{
+  < ARROW: "->" >
+| < LEFTB:"(" >
+| < RIGHTB:")" >
+| < ASSIGN:":=" >
+| < LET:"let" >
+| < IN:"in" >
+| < IF:"if" >
+| < THEN:"then" >
+| < END:"end" >
+| < ELSE:"else" >
+| < WHILE:"while" >
+| < DO:"do" >
+| < FST:"fst" >
+| < SND:"snd" >
+| < HEAD:"head" >
+| < TAIL:"tail" >
+| < SEMI:";" >
+| < COMMA:"," >
+| < FUN:"fun" >
+| < WGGPRINT:"wggprint" >
+}
+/* bop*/
+TOKEN :
+{
+ < EQUAL: "=" >
+| < GT: ">" >
+| < LT: "<" >
+| < OR: "or" >
+| < AND: "and" >
+| < PLUS: "+" >
+| < MINUS: "-" >
+| < STAR: "*" >
+| < SLASH: "/" >
+}
+/*uop*/
+TOKEN :
+{
+  < LANG:"~" >
+| < NOT:"not" >
+}
+
+/* value */
+TOKEN :
+{
+
+  < INT: ["0"-"9"] (["0"-"9"])*|"undef" >
+| < BOOL: "true"|"false">
+| < NIL:"nil" >
+| < NOP:"()" >
+}
+
+/* IDENTIFIERS */
+
+TOKEN :
+{
+  < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT>)* >
+|
+  < LETTER:  ["a"-"z"] >
+|
+  < DIGIT:
+      ["0"-"9"]
+  >
+}
+
+
+
+void syntax_Analysis()#ConditionalNode(false) :
+{
+}
+{
+  Expression() 
+  <EOF>
+}
+
+void Variable():
+{
+  Token t;}{
+  (    t=< IDENTIFIER >)
+  {
+    jjtThis.jjtSetValue(t);
+  }}
+
+void Expression()#ConditionalNode(false):
+{}
+{
+  Sequence()}
+
+void Sequence()#Sequence(>1):
+{
+}
+{
+  SingleExpression() (";" SingleExpression())*
+}
+
+void SingleExpression()#ConditionalNode(false):
+{}{
+  AnonymousFunction()|AssignExpression()}
+void AnonymousFunction():
+{}
+{
+  "fun" Variable() "->" SingleExpression()}
+void AssignExpression()#AssignExpression(>1):
+{}{
+  ListExpression() (":=" SingleExpression())*}
+
+void ListExpression()#ListExpression(>1):
+{}{
+  AddOrExpression() ("::" AddOrExpression())*}
+
+void AddOrExpression()#AddOrExpression(>1):
+{}{
+  CondExpression() (AddOr_Op() CondExpression())*}
+
+void AddOr_Op():
+{
+  Token t;}{
+  (t="and"|t="or")
+  {
+    jjtThis.jjtSetValue(t);
+  }}
+void CondExpression()#CondExpression(>1):
+{}{
+  AddSubExpression()(Cond_Op() AddSubExpression())*}
+
+void Cond_Op():
+{
+  Token t;
+}
+{
+  (t="="|t=">"|t="<")
+  {
+    jjtThis.jjtSetValue(t);
+  }
+}
+void AddSubExpression()#AddSubExpression(>1):
+{}
+{
+  MulDivExpression()(AddSub_Op() MulDivExpression())*}
+void AddSub_Op():
+{
+  Token t;
+}
+{
+  (t="+"|t="-")
+  {
+    jjtThis.jjtSetValue(t);
+  }
+}
+void MulDivExpression()#MulDivExpression(>1):
+{}{
+  UopExpression()(MulDiv_Op() UopExpression())*}
+void MulDiv_Op():
+{
+  Token t;
+}
+{
+  (t="*"|t="/")
+  {
+    jjtThis.jjtSetValue(t);
+  }
+}
+void  UopExpression()#UopExpression(>1):
+{}
+{
+  (Uop())* AtomicExpression()}
+void Uop():
+{
+  Token t;}
+{
+  (t="fst"|t="snd"|t="head"|t="tail"|t="~"|t="not")
+  {
+    jjtThis.jjtSetValue(t);
+  }}
+void AtomicExpression()#ConditionalNode(false):
+{}{
+  Variable()
+| Value()
+| LOOKAHEAD("(" Expression() ",")PairExp()
+| LOOKAHEAD("(" Expression()")")BraExp()
+| LOOKAHEAD("(" Expression())AppExp()
+| LetExp()
+| IfExp()
+| WhileExp()
+| PrintExp()}
+void PrintExp():
+{
+}
+{
+	"wggprint" SingleExpression()
+}
+void Value()#ConditionalNode(false):
+{}{
+  (        VInt()
+| VBool()
+| VNil()
+| VNop()
+)}
+void VInt():
+{
+  Token t;}
+{
+  (t=< INT>)
+  {
+    jjtThis.jjtSetValue(t);
+  }}
+void VBool():
+{
+  Token t;
+}
+{
+  (t=< BOOL>)
+  {
+    jjtThis.jjtSetValue(t);
+  }
+}
+void VNil():
+{
+  Token t;
+}
+{
+  (t=< NIL>)
+  {
+    jjtThis.jjtSetValue(t);
+  }
+}
+void VNop():
+{
+  Token t;
+}
+{
+  (t=< NOP>)
+  {
+    jjtThis.jjtSetValue(t);
+  }
+}
+void PairExp():
+{
+}
+{
+  "(" Expression() "," Expression() ")"
+}
+void AppExp():
+{
+}
+{
+  "(" Expression()  Expression() ")"
+}
+
+void LetExp():
+{
+}
+{
+  "let"  Variable() "=" Expression() "in"  Expression() "end"
+}
+void IfExp():
+{
+}
+{
+  "if" Expression() "then"  Expression() "else" Expression() "end"
+}
+void WhileExp():
+{
+}
+{
+  "while" Expression() "do"  Expression() "end"
+}
+void BraExp():
+{
+}
+{
+  "(" Expression() ")"
+}

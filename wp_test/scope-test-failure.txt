@@ -1,0 +1,11 @@
+let
+  f1 = fun x -> fun y -> y*(x + num) in
+  let
+	num = 10 in 
+	let 
+		f2 = fun x -> fun y -> y*(x + num)
+	in 
+     ((f1 1) 2)
+    end
+  end
+end

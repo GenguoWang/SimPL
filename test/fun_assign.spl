@@ -1,0 +1,2 @@
+let a=fun x->1 in a:= fun y->true;a end
+$

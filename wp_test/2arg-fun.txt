@@ -1,0 +1,7 @@
+let 
+  x = fun y ->
+      fun y -> 
+      y+y+100 
+  in 
+     ((x 1) 2) 
+end
