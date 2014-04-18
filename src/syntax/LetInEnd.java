@@ -39,6 +39,7 @@ public class LetInEnd extends Expression{
 	{
 		Value vdef = definition.measure(env);
 		Env newenv = null;
+		//TODO,no need to special handle for function
 		if(vdef.type.typeid == TypeEnum.t_function)
 		{
 			AnonymousFunction fun = (AnonymousFunction)vdef;

@@ -38,6 +38,7 @@ public class Application extends Expression{
 	}
 	public Value measure(Env env) throws SimPLException
 	{
+		//TODO:I think no need to measure func again!can just run!
 		Value f =  func.measure(env);
 		Value p = param.measure(env);
 		if(f.type.typeid == Type.TypeEnum.t_function)
