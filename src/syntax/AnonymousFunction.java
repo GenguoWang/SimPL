@@ -29,38 +29,17 @@ public class AnonymousFunction extends Value{
 	}
 	public Value measure(Env env) throws SimPLException
 	{
-		//this.type.typeid = Type.TypeEnum.t_function;
-		//if(Env.funEnv != null)
-		//{
 			AnonymousFunction cur = new AnonymousFunction();
 			cur.arg = this.arg;
 			cur.body = this.body;
 			cur.scope = env;
 			return cur;
-		//}
-		//return this;
 	}
-	public Value run(Env env,Value par)  throws SimPLException
+	public Value run(Value par)  throws SimPLException
 	{
-		env = new Env(this.scope);
-		/*
-		if(this.env!=null)
-		{
-			env.add(this.env);
-			env = new Env(env);
-		}
-		*/
+		Env env = new Env(this.scope);
 		env.newValue(arg.name, par);
 		Value v = body.measure(env);
-		/*
-		if(v.type.typeid == Type.TypeEnum.t_function)
-		{
-			AnonymousFunction tempf= (AnonymousFunction)v;
-			tempf.env = new Env();
-			tempf.env.add(this.env);
-			tempf.env.add(arg.name, par);
-		}
-		*/
 		return v;
 	}
 	public boolean equals(Value t)

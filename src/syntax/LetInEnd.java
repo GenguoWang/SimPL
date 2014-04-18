@@ -38,22 +38,9 @@ public class LetInEnd extends Expression{
 	public Value measure(Env env) throws SimPLException
 	{
 		Value vdef = definition.measure(env);
-		Env newenv = null;
-		//TODO,no need to special handle for function
-		if(vdef.type.typeid == TypeEnum.t_function)
-		{
-			AnonymousFunction fun = (AnonymousFunction)vdef;
-			env = new Env(env);
-			env.newValue(x.name, vdef);
-			fun.scope = env;
-			newenv = new Env(env);
-		}
-		else
-		{
-			newenv = new Env(env);
-			newenv.newValue(x.name, vdef);
-		}
-		
+        //LetInEnd define a new scope,so must create a new env
+		Env newenv = new Env(env);
+		newenv.newValue(x.name, vdef);
 		return body.measure(newenv);
 	}
 }

@@ -28,11 +28,11 @@ public class SimPLException extends Exception {
 			switch(etype)
 			{
 			case synatax_error:
-				return "Syntax Error!";
+				return "Syntax Error!"+msg;
 			case type_error:
-				return "Type Error!";
+				return "Type Error!"+msg;
 			case runtime_error:
-				return "Runtime Error!";
+				return "Runtime Error!"+msg;
 			}
 		}
 		return "no type";

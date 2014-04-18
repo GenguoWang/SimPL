@@ -3,6 +3,10 @@
 	<target name="init">
 		<mkdir dir="build"/>
 	</target>
+	<target name="javacc">
+		<jjtree target="src/javacc/SimPL.jjt" javacchome="/home/kingo/softwares/local/javacc-6.0" outputdirectory="src/javacc"/>
+		<javacc target="src/javacc/SimPL.jj" javacchome="/home/kingo/softwares/local/javacc-6.0" outputdirectory="src/javacc"/>
+	</target>
 	<target name="compile" depends="init">
 		<javac srcdir="src" destdir="build" includeantruntime="yes"/>
 	</target>
@@ -10,6 +14,11 @@
 		<java classpath="build" classname="simPL.WggSimPL">
 			<arg value="-f"/>
 			<arg value="test/queens.spl"/>
+		</java>
+	</target>
+	<target name="cmd" depends="compile">
+		<java classpath="build" classname="simPL.WggSimPL">
+			<arg value="-s"/>
 		</java>
 	</target>
 </project>
